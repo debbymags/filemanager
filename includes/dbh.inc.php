@@ -1,3 +1,4 @@
+<!-- establish database connection -->
 <?php
 
 $serverName = "localhost";

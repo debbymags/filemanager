@@ -2,23 +2,26 @@
     include_once 'header.php';
 ?>
 
+<!-- LOG IN form -->
+<div class="main">
+    <p class="sign" align="center">Log in</p>
+    <form class="form1" action="includes/login.inc.php" method="POST">
+        <input class="un" type="text" align="center" name="username" placeholder="Username/Email">
+        <input class="pass" type="password" align="center" name="pwd" placeholder="Password">
+        <button class="submit" type='submit' align="center" name='submit'>Log in</button>
+    </form>
+</div>
 
-<h2> Log in</h2>
-<form action="includes/login.inc.php" method="POST">
-    
-    <input type="text" name="username" placeholder="Username/Email">
-    <input type="password" name="pwd" placeholder="Password">
-    <button type='submit' name='submit'>LOG IN</button>
-</form>
 
 
+<!-- error messages -->
 <?php
     if(isset($_GET["error"])){
         if($_GET["error"] == "emptyinput"){
-            echo "<p>Fill in all fields!</p>";
+            echo "<p id='display-error'>Fill in all fields!</p>";
         }
         else if($_GET["error"] == "wronglogin"){
-            echo "<p>Incorrect login details!</p>";
+            echo "<p id='display-error'>Incorrect login details!</p>";
         }
     }
 ?>

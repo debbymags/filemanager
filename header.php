@@ -2,29 +2,30 @@
     session_start();
 ?>
 
+<!-- HEADER FILE. Include in all web pages -->
 <!DOCTYPE html>
 
 <head>
-    <title> </title>
+    <link rel="stylesheet" href="css/style.css?v=1">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://use.fontawesome.com/a553b9ef43.js"></script>
+    <title></title>
 </head>
 
 <body>
-    <nav>
-        <ul>
-            <li><a href="index.php">Home</a></li>
-            <?php
-                if(isset($_SESSION["userid"])){
-                    echo "<li><a href='includes/logout.inc.php'>Log out</a></li>";
-                }
-                else {
-                    echo "<li><a href='signup.php'>Sign up</a></li>";
-                    echo "<li><a href='login.php'>Log in</a></li>";
-                }
-            ?>
-            
-            
-        </ul>
-    </nav>
+    <div class="topnav">
+        <a href="index.php">Home</a>
+        <?php
+            if(isset($_SESSION["userid"])){
+                echo "<a href='includes/logout.inc.php'>Log out</a>";
+            }
+            else {
+                echo "<a href='signup.php'>Sign up</a>";
+                echo "<a href='login.php'>Log in</a>";
+            }
+        ?>
+    </div>
 </body>
 
 </html>

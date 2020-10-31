@@ -1,5 +1,6 @@
 <?php
 
+//function to check if sign up form input is empty
 function emptyInput($firstname, $lastname, $email, $username, $pwd, $pwdrepeat){
     $result;
     if(empty($firstname) || empty($lastname) || empty($email) || empty($username) || empty($pwd) || empty($pwdrepeat)){
@@ -11,6 +12,7 @@ function emptyInput($firstname, $lastname, $email, $username, $pwd, $pwdrepeat){
     return $result;
 }
 
+//function to check if sign up username is valid
 function invalidUsername($username){
     $result;
     if(!preg_match("/^[a-zA-Z0-9]*$/", $username)){
@@ -22,6 +24,7 @@ function invalidUsername($username){
     return $result;
 }
 
+//function to check if sign up email is valid
 function invalidEmail($email){
     $result;
     if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
@@ -33,6 +36,7 @@ function invalidEmail($email){
     return $result;
 }
 
+//function to check if sign up password and password repeat fields match
 function pwdMismatch($pwd, $pwdrepeat){
     $result;
     if($pwd != $pwdrepeat){
@@ -44,6 +48,7 @@ function pwdMismatch($pwd, $pwdrepeat){
     return $result;
 }
 
+//function to check if sign up username is available
 function usernameTaken($conn, $username, $email){
     $sql = "SELECT * FROM users WHERE username = ? OR email = ?;";
     $stmt = mysqli_stmt_init($conn);
@@ -58,6 +63,7 @@ function usernameTaken($conn, $username, $email){
     $resultData = mysqli_stmt_get_result($stmt);
 
     if($row = mysqli_fetch_assoc($resultData)){
+        //store query result of username search
         return $row;
     }
     else {
@@ -68,6 +74,7 @@ function usernameTaken($conn, $username, $email){
     mysqli_stmt_close($stmt);
 }
 
+//function to register user in the database
 function createUser($conn, $firstname, $lastname, $email, $username, $pwd){
     $sql = "INSERT INTO users (firstname, lastname, email, username, password) VALUES (?, ?, ?, ?, ?);";
     $stmt = mysqli_stmt_init($conn);
@@ -96,6 +103,7 @@ function emptyInputLogin($username, $pwd){
     return $result;
 }
 
+//function to log in user
 function loginUser($conn, $username, $pwd){
     $usernameExists = usernameTaken($conn, $username, $username);
 
@@ -120,7 +128,7 @@ function loginUser($conn, $username, $pwd){
     }
 }
 
-
+//function to upload file to database and file folder
 function uploadFile($conn, $file, $access){
     $fileName = $file['name'];
     $fileTmpName = $file['tmp_name'];
@@ -135,20 +143,22 @@ function uploadFile($conn, $file, $access){
 
     if(in_array($fileActualExt, $allowed)){
         if($fileError===0){
-            if($fileSize < 50000000){
-                $fileDestination = $access.'/'.$fileName;
+            if($fileSize < 50000000){ 
+                $fileNewName = rtrim(str_replace(' ', '', $fileName), $fileActualExt).uniqid().".".$fileActualExt;
+                $fileDestination = '../'.$access.'/'.$fileNewName;
                 move_uploaded_file($fileTmpName, $fileDestination);
-                header("Location: ../index.php?uploadsuccess");
-                exit();
-            } else{
+            } 
+            else{
                 header("Location: ../index.php?filetoolarge");
                 exit();
             }
-        } else{
+        }
+        else{
             header("Location: ../index.php?uploaderror");
             exit();
         }
-    } else{
+    }
+    else{
         header("Location: ../index.php?unacceptedtype");
         exit();
     }
@@ -161,22 +171,17 @@ function uploadFile($conn, $file, $access){
         exit();
     }
 
-    mysqli_stmt_bind_param($stmt, "s", $fileName);
+    mysqli_stmt_bind_param($stmt, "s", $fileNewName);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
-    header("location: ../index.php?error=none");
+    header("location: ../index.php?error=uploadsuccess");
     exit();
 }
 
-
+//function to display all files available in the database
 function displayFiles($conn, $access){
-    if ($access){
-        $sql = "SELECT * FROM private;";
-    }
-    else{
-        $sql = "SELECT * FROM public;";
-    }
-
+  
+    $sql = "SELECT * FROM ".$access.";";
     $stmt = mysqli_stmt_init($conn);
     if(!mysqli_stmt_prepare($stmt, $sql)){
         header("location: ../index.php?error=stmtfailed");
@@ -188,12 +193,25 @@ function displayFiles($conn, $access){
     $resultData = mysqli_stmt_get_result($stmt);
     $rowCount = mysqli_num_rows($resultData);
 
-    if($row = mysqli_fetch_assoc($resultData)){
-        return $row;
+    $rows[] = mysqli_fetch_assoc($resultData);
+    while ($row = mysqli_fetch_assoc($resultData)){
+        $rows[]=$row;
     }
-    else {
-        return false;
+    return array($rowCount, $rows);
+
+    mysqli_stmt_close($stmt);
+}
+
+//function to delete file from database
+function deleteFile($conn, $name, $folder){
+    $sql = "DELETE FROM ".$folder." WHERE fname = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    if(!mysqli_stmt_prepare($stmt, $sql)){
+        header("location: ../index.php?error=stmtfailed");
+        exit();
     }
 
+    mysqli_stmt_bind_param($stmt, "s", $name);
+    mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 }

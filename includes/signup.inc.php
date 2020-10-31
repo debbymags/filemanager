@@ -12,6 +12,7 @@ if(isset($_POST["submit"])){
     require_once 'dbh.inc.php';
     require_once 'functions.inc.php';
     
+    //validate sign up form input
     if(emptyInput($firstname, $lastname, $email, $username, $pwd, $pwdrepeat) !== false){
         header("location: ../signup.php?error=emptyinput");
         exit();
@@ -37,6 +38,7 @@ if(isset($_POST["submit"])){
         exit();
     }
 
+    //call funtion to sign up user
     createUser($conn, $firstname, $lastname, $email, $username, $pwd);
 
 }
