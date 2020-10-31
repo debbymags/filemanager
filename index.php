@@ -17,6 +17,7 @@
             PUBLIC FILES
         </h>
 
+
         <?php
             // If user is logged in, display file upload form
             if(isset($_SESSION["userid"])){
@@ -26,8 +27,15 @@
                 echo "<input type='hidden' name='access' value='public'>";
                 echo "</form>";
                 echo "<br>";
+                echo "<br>";
             }
         ?>
+
+        <!-- search field for public files -->
+        <div class ="inputContainer">
+            <i class="fa fa-search icon position-absolute"></i> 
+            <input type="text" class= "un2" id="searchInput" onkeyup="myFunction()" placeholder="Search for public files..">
+        </div>
 
         <?php
             require_once 'includes/dbh.inc.php';
@@ -39,7 +47,7 @@
                 $count = $filelist[0];
 
                 //PUBLIC FILES table
-                echo "<table class='styled-table'>";
+                echo "<table class='styled-table' id='publicTable'>";
                 echo "<thead><tr><th>Public Files</th></tr></thead><tbody>";
                 
                 while($count>0){
@@ -86,13 +94,20 @@
                 echo "<input type='hidden' name='access' value='private'>";
                 echo "</form>";
                 echo "<br>";
-                
+                echo "<br>";
+
+                //search field for private files
+                echo "<div class ='inputContainer'>";
+                echo "<i class='fa fa-search icon position-absolute'></i>";
+                echo "<input type='text'  class= 'un2' id='searchInput2' onkeyup='myFunction2()' placeholder='Search for private files..'>";
+                echo "</div>";
+
                 $access = "private";
                 $filelist = displayFiles($conn, $access);
                 if ($filelist !== false){
                     $count = $filelist[0];
 
-                    echo "<table class='styled-table'>";
+                    echo "<table class='styled-table' id='privateTable'>";
                     echo "<thead><tr><th>Public Files</th></tr></thead><tbody>";
 
                     while($count>0){
