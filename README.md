@@ -7,6 +7,7 @@ A very simple FILE MANAGEMENT SYSTEM which features:
 * A list of private files accessible to existing users
 * File upload and delete option for existing users
 * File download option for both unregistered and registered users
+* File name search
 
 
 ## Built With
